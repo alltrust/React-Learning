@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, {useState} from "react";
 
 const welcome = {
   greeting: "Hey ",
@@ -6,6 +6,7 @@ const welcome = {
 };
 
 const App = () => {
+  console.log('app renders')
   const stories = [
     {
       title: "React",
@@ -38,6 +39,7 @@ const App = () => {
 };
 
 const List = (props) => {
+  console.log('list renders')
   return (
     <div>
       {props.list.map((item) => {
@@ -50,6 +52,7 @@ const List = (props) => {
 };
 
 const Item = (props) => {
+  console.log('item renders')
   return (
     <div>
       <a href={props.item.url}>{props.item.title}</a>
@@ -61,13 +64,17 @@ const Item = (props) => {
 };
 
 const Search = () => {
+  console.log('seach renders')
+  const [searchTerm, setSearchTerm] = useState('')
   const handleChange = (event) => {
-    console.log(event.target.value);
+    setSearchTerm(event.target.value)
   };
   return (
     <div>
       <label htmlFor="search">Search: </label>
       <input id="search" type="text" onChange={handleChange} />
+
+      <p>{searchTerm}</p>
     </div>
   );
 };
