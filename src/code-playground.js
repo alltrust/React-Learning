@@ -63,6 +63,16 @@ const userProfile = {
   ...address,
 };
 console.log(userProfile)
+//REST operator (goes last, gives the 'rest' of obj)
+const info = {
+    id: 1,
+    firName: "aldo",
+    lasName: "garcia",
+    country: "Canada",
+    city:"Aurora"
+}
+const {firName, lasName, ...everythingElse} = info
+console.log(everythingElse)
 
 // filter function demo
 

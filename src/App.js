@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const welcome = {
   greeting: "Hey ",
@@ -25,13 +25,19 @@ const App = () => {
       objectID: 1,
     },
   ];
-  const [searchTerm, setSearchTerm] = useState("React");
+  const [searchTerm, setSearchTerm] = useState(
+    localStorage.getItem("search") || "React"
+  );
+  useEffect(()=>{
+    localStorage.setItem("search", searchTerm);
+  },[searchTerm]);
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
   console.log(searchTerm);
   const searchedStories = stories.filter((story) => {
-    return story.title.toLowerCase().includes(searchTerm.toLocaleLowerCase());
+    return story.title.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   return (
@@ -52,29 +58,20 @@ const List = ({ list }) => {
   return (
     <div>
       {list.map((item) => {
-        return (
-          <Item
-            key={item.objectID}
-            title={item.title}
-            url={item.url}
-            author={item.author}
-            num_comments={item.num_comments}
-            points={item.points}
-          />
-        );
+        return <Item key={item.objectID} item={item} />;
       })}
     </div>
   );
 };
 
-const Item = ({ title, url, author, num_comments, points }) => {
+const Item = ({ item }) => {
   console.log("item renders");
   return (
     <div>
-      <a href={url}>{title}</a>
-      <span> {author}</span>
-      <span> {num_comments}</span>
-      <span> {points}</span>
+      <a href={item.url}>{item.title}</a>
+      <span> {item.author}</span>
+      <span> {item.num_comments}</span>
+      <span> {item.points}</span>
     </div>
   );
 };
