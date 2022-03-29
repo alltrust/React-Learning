@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 const welcome = {
   greeting: "Hey ",
@@ -6,7 +6,7 @@ const welcome = {
 };
 
 const App = () => {
-  console.log('app renders')
+  console.log("app renders");
   const stories = [
     {
       title: "React",
@@ -25,12 +25,14 @@ const App = () => {
       objectID: 1,
     },
   ];
-const [searchTerm, setSearchTerm] = useState('')
-  const handleSearch = (event)=>{
-    setSearchTerm(event.target.value)
-  }
-  console.log(searchTerm)
-
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (event) => {
+    setSearchTerm(event.target.value);
+  };
+  console.log(searchTerm);
+  const searchedStories = stories.filter((story)=>{
+    return story.title.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+  })
 
   return (
     <div>
@@ -38,28 +40,26 @@ const [searchTerm, setSearchTerm] = useState('')
         {welcome.greeting}
         {welcome.title}
       </h1>
-      <Search onSearch= {handleSearch}/>
+      <Search onSearch={handleSearch} />
       <hr />
-      <List list={stories} />
+      <List list={searchedStories} />
     </div>
   );
 };
 
 const List = (props) => {
-  console.log('list renders')
+  console.log("list renders");
   return (
     <div>
       {props.list.map((item) => {
-        return (
-          <Item key={item.objectID} item={item} />
-        );
+        return <Item key={item.objectID} item={item} />;
       })}
     </div>
   );
 };
 
 const Item = (props) => {
-  console.log('item renders')
+  console.log("item renders");
   return (
     <div>
       <a href={props.item.url}>{props.item.title}</a>
@@ -71,7 +71,7 @@ const Item = (props) => {
 };
 
 const Search = (props) => {
-  console.log('seach renders'); 
+  console.log("seach renders");
   return (
     <div>
       <label htmlFor="search">Search: </label>

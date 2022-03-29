@@ -1,4 +1,4 @@
-// comparing classes with  function components 
+// comparing classes with  function components
 
 class Developer {
   constructor(firstName, LastName) {
@@ -14,7 +14,16 @@ const robin = new Developer("Robin", "Wieruch");
 
 console.log(robin.getName());
 
-const dennis = new Developer("Dennis", "wieruch")
+const dennis = new Developer("Dennis", "wieruch");
 
-console.log(dennis.getName())
+console.log(dennis.getName());
 
+// filter function demo
+
+const words = ["spray", "present", "trust", "exuberant", "descruction"];
+
+const filteredWords = words.filter((word) => {
+  return word.length > 6;
+});
+
+console.log(filteredWords)
