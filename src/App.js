@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import Slider from "./Slider";
 
 const welcome = {
   greeting: "Hey ",
@@ -50,6 +51,7 @@ const App = () => {
         {welcome.greeting}
         {welcome.title}
       </h1>
+      <Slider />
       <InputWithLabel
         id="search"
         label="search"
@@ -64,6 +66,8 @@ const App = () => {
     </>
   );
 };
+
+
 
 const List = ({ list }) => {
   console.log("list renders");
