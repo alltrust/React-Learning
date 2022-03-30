@@ -55,7 +55,9 @@ const App = () => {
         label="search"
         value={searchTerm}
         onSearch={handleSearch}
-      />
+      >
+        Search:
+      </InputWithLabel>
       <hr />
       <List list={searchedStories} />
     </>
@@ -86,12 +88,12 @@ const Item = ({ item }) => {
   );
 };
 
-const InputWithLabel = ({ id, label, value, type = "text", onSearch }) => {
+const InputWithLabel = ({ id, value, type = "text", onSearch, children }) => {
   console.log("search renders");
   // const {search, onSearch} = props
   return (
     <div>
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{children}</label>
       &nbsp;
       <input id={id} type={type} onChange={onSearch} value={value} />
     </div>
