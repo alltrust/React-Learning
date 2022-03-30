@@ -5,15 +5,13 @@ const welcome = {
   title: "React",
 };
 
-const useSemiPersistantState = (key, initialValue)=>{
-  const [value, setValue] = useState(
-    localStorage.getItem(key) || initialValue
-  );
-  useEffect(()=>{
+const useSemiPersistantState = (key, initialValue) => {
+  const [value, setValue] = useState(localStorage.getItem(key) || initialValue);
+  useEffect(() => {
     localStorage.setItem(key, value);
-  },[value, key]);
-  return [value, setValue]
-}
+  }, [value, key]);
+  return [value, setValue];
+};
 
 const App = () => {
   console.log("app renders");
@@ -35,8 +33,8 @@ const App = () => {
       objectID: 1,
     },
   ];
-  
-const [searchTerm, setSearchTerm] = useSemiPersistantState('search', 'React')
+
+  const [searchTerm, setSearchTerm] = useSemiPersistantState("search", "React");
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -52,7 +50,12 @@ const [searchTerm, setSearchTerm] = useSemiPersistantState('search', 'React')
         {welcome.greeting}
         {welcome.title}
       </h1>
-      <Search search={searchTerm} onSearch={handleSearch} />
+      <InputWithLabel
+        id="search"
+        label="search"
+        value={searchTerm}
+        onSearch={handleSearch}
+      />
       <hr />
       <List list={searchedStories} />
     </>
@@ -78,18 +81,19 @@ const Item = ({ item }) => {
       <span> {item.author}</span>
       <span> {item.num_comments}</span>
       <span> {item.points}</span>
-      <br/>
+      <br />
     </>
   );
 };
 
-const Search = ({ search, onSearch }) => {
+const InputWithLabel = ({ id, label, value, type = "text", onSearch }) => {
   console.log("search renders");
   // const {search, onSearch} = props
   return (
     <div>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text" onChange={onSearch} value={search} />
+      <label htmlFor={id}>{label}</label>
+      &nbsp;
+      <input id={id} type={type} onChange={onSearch} value={value} />
     </div>
   );
 };
