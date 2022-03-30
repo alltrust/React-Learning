@@ -5,6 +5,16 @@ const welcome = {
   title: "React",
 };
 
+const useSemiPersistantState = (key, initialValue)=>{
+  const [value, setValue] = useState(
+    localStorage.getItem(key) || initialValue
+  );
+  useEffect(()=>{
+    localStorage.setItem(key, value);
+  },[value, key]);
+  return [value, setValue]
+}
+
 const App = () => {
   console.log("app renders");
   const stories = [
@@ -25,12 +35,8 @@ const App = () => {
       objectID: 1,
     },
   ];
-  const [searchTerm, setSearchTerm] = useState(
-    localStorage.getItem("search") || "React"
-  );
-  useEffect(()=>{
-    localStorage.setItem("search", searchTerm);
-  },[searchTerm]);
+  
+const [searchTerm, setSearchTerm] = useSemiPersistantState('search', 'React')
 
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
@@ -41,7 +47,7 @@ const App = () => {
   });
 
   return (
-    <div>
+    <>
       <h1>
         {welcome.greeting}
         {welcome.title}
@@ -49,35 +55,36 @@ const App = () => {
       <Search search={searchTerm} onSearch={handleSearch} />
       <hr />
       <List list={searchedStories} />
-    </div>
+    </>
   );
 };
 
 const List = ({ list }) => {
   console.log("list renders");
   return (
-    <div>
+    <>
       {list.map((item) => {
         return <Item key={item.objectID} item={item} />;
       })}
-    </div>
+    </>
   );
 };
 
 const Item = ({ item }) => {
   console.log("item renders");
   return (
-    <div>
+    <>
       <a href={item.url}>{item.title}</a>
       <span> {item.author}</span>
       <span> {item.num_comments}</span>
       <span> {item.points}</span>
-    </div>
+      <br/>
+    </>
   );
 };
 
 const Search = ({ search, onSearch }) => {
-  console.log("seach renders");
+  console.log("search renders");
   // const {search, onSearch} = props
   return (
     <div>
