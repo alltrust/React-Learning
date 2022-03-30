@@ -16,7 +16,7 @@ const useSemiPersistantState = (key, initialValue) => {
 
 const App = () => {
   console.log("app renders");
-  const stories = [
+  const initialStories = [
     {
       title: "React",
       url: "https://reactjs.org/",
@@ -37,6 +37,15 @@ const App = () => {
 
   const [searchTerm, setSearchTerm] = useSemiPersistantState("search", "React");
 
+  const [stories, setStories] = useState(initialStories);
+
+  const handleRemoveStory = (item) => {
+    const newStories = stories.filter((story)=>
+      item.objectID !== story.objectID
+    )
+    setStories(newStories);
+  };
+
   const handleSearch = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -51,7 +60,7 @@ const App = () => {
         {welcome.greeting}
         {welcome.title}
       </h1>
-      <Slider />
+      {/* <Slider /> */}
       <InputWithLabel
         id="search"
         label="search"
@@ -62,25 +71,26 @@ const App = () => {
         Search:
       </InputWithLabel>
       <hr />
-      <List list={searchedStories} />
+      <List list={searchedStories} onRemoveItem={handleRemoveStory} />
     </>
   );
 };
 
-
-
-const List = ({ list }) => {
+const List = ({ list, onRemoveItem }) => {
   console.log("list renders");
   return (
     <>
       {list.map((item) => {
-        return <Item key={item.objectID} item={item} />;
+        return <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem}/>;
       })}
     </>
   );
 };
 
-const Item = ({ item }) => {
+const Item = ({ item, onRemoveItem }) => {
+  // const handleRemoveItem = ()=>{
+  //   onRemoveItem(item)
+  // }
   console.log("item renders");
   return (
     <>
@@ -88,6 +98,9 @@ const Item = ({ item }) => {
       <span> {item.author}</span>
       <span> {item.num_comments}</span>
       <span> {item.points}</span>
+      <span>
+        <button type='button' onClick={()=> onRemoveItem(item)}>Dismiss</button>
+      </span>
       <br />
     </>
   );
@@ -103,11 +116,11 @@ const InputWithLabel = ({
 }) => {
   const inputRef = useRef();
 
-  useEffect(()=>{
-    if(isFocused && inputRef.current ){
-      inputRef.current.focus()
+  useEffect(() => {
+    if (isFocused && inputRef.current) {
+      inputRef.current.focus();
     }
-  },[isFocused])
+  }, [isFocused]);
 
   console.log("search renders");
   // const {search, onSearch} = props
@@ -115,7 +128,13 @@ const InputWithLabel = ({
     <div>
       <label htmlFor={id}>{children}</label>
       &nbsp;
-      <input id={id} type={type} onChange={onSearch} value={value} ref={inputRef}/>
+      <input
+        id={id}
+        type={type}
+        onChange={onSearch}
+        value={value}
+        ref={inputRef}
+      />
     </div>
   );
 };
