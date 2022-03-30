@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 const welcome = {
   greeting: "Hey ",
@@ -55,6 +55,7 @@ const App = () => {
         label="search"
         value={searchTerm}
         onSearch={handleSearch}
+        isFocused
       >
         Search:
       </InputWithLabel>
@@ -88,14 +89,29 @@ const Item = ({ item }) => {
   );
 };
 
-const InputWithLabel = ({ id, value, type = "text", onSearch, children }) => {
+const InputWithLabel = ({
+  id,
+  value,
+  type = "text",
+  onSearch,
+  children,
+  isFocused,
+}) => {
+  const inputRef = useRef();
+
+  useEffect(()=>{
+    if(isFocused && inputRef.current ){
+      inputRef.current.focus()
+    }
+  },[isFocused])
+
   console.log("search renders");
   // const {search, onSearch} = props
   return (
     <div>
       <label htmlFor={id}>{children}</label>
       &nbsp;
-      <input id={id} type={type} onChange={onSearch} value={value} />
+      <input id={id} type={type} onChange={onSearch} value={value} ref={inputRef}/>
     </div>
   );
 };
