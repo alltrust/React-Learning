@@ -35,14 +35,25 @@ const App = () => {
     },
   ];
 
+  const getAsyncStories = () =>
+    new Promise((resolve) =>
+      setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
+    );
+
   const [searchTerm, setSearchTerm] = useSemiPersistantState("search", "React");
 
-  const [stories, setStories] = useState(initialStories);
+  const [stories, setStories] = useState([]);
+
+  useEffect(() => {
+    getAsyncStories().then((result) => {
+      setStories(result.data.stories);
+    });
+  }, []);
 
   const handleRemoveStory = (item) => {
-    const newStories = stories.filter((story)=>
-      item.objectID !== story.objectID
-    )
+    const newStories = stories.filter(
+      (story) => item.objectID !== story.objectID
+    );
     setStories(newStories);
   };
 
@@ -81,7 +92,9 @@ const List = ({ list, onRemoveItem }) => {
   return (
     <>
       {list.map((item) => {
-        return <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem}/>;
+        return (
+          <Item key={item.objectID} item={item} onRemoveItem={onRemoveItem} />
+        );
       })}
     </>
   );
@@ -99,7 +112,9 @@ const Item = ({ item, onRemoveItem }) => {
       <span> {item.num_comments}</span>
       <span> {item.points}</span>
       <span>
-        <button type='button' onClick={()=> onRemoveItem(item)}>Dismiss</button>
+        <button type="button" onClick={() => onRemoveItem(item)}>
+          Dismiss
+        </button>
       </span>
       <br />
     </>
