@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useReducer } from "react";
-import Slider from "./Slider";
+import axios from "axios";
 
 const welcome = {
   greeting: "Hey ",
@@ -55,7 +55,7 @@ const App = () => {
   console.log("app renders");
   const [searchTerm, setSearchTerm] = useSemiPersistantState("search", "React");
 
-  const[url, setUrl] = useState(`${API_ENDPOINT}${searchTerm}`);
+  const [url, setUrl] = useState(`${API_ENDPOINT}${searchTerm}`);
 
   const [stories, dispatchStories] = useReducer(storiesReducer, {
     data: [],
@@ -65,11 +65,10 @@ const App = () => {
 
   const handleFetchStories = React.useCallback(() => {
     dispatchStories({ type: storiesFetchInit });
-
-    fetch(url)
-      .then((response) => response.json())
+    axios
+      .get(url)
       .then((result) => {
-        dispatchStories({ type: storiesFetchSuccess, payload: result.hits });
+        dispatchStories({ type: storiesFetchSuccess, payload: result.data.hits });
       })
       .catch(() => dispatchStories({ type: storiesFetchFailure }));
   }, [url]);
@@ -86,9 +85,9 @@ const App = () => {
   const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);
   };
-  const handleSearchSubmit = ()=>{
-    setUrl(`${API_ENDPOINT}${searchTerm}`)
-  }
+  const handleSearchSubmit = () => {
+    setUrl(`${API_ENDPOINT}${searchTerm}`);
+  };
   // const searchedStories = stories.data.filter((story) => {
   //   return story.title.toLowerCase().includes(searchTerm.toLowerCase());
   // });
