@@ -18,19 +18,28 @@ const actionStories = {
   removeStory: "REMOVE_STORY",
   storiesFetchInit: "STORIES_FETCH_INIT",
   storiesFetchSuccess: "STORIES_FETCH_SUCCESS",
-  storiesFetchFailure: "STORIES_FETCH_FAILURE"
-
+  storiesFetchFailure: "STORIES_FETCH_FAILURE",
 };
-const { storiesFetchFailure, storiesFetchInit, storiesFetchSuccess, removeStory } = actionStories;
+const {
+  storiesFetchFailure,
+  storiesFetchInit,
+  storiesFetchSuccess,
+  removeStory,
+} = actionStories;
 
 const storiesReducer = (state, action) => {
   switch (action.type) {
     case storiesFetchInit:
-      return {...state, isLoading: true, isError:false}
+      return { ...state, isLoading: true, isError: false };
     case storiesFetchSuccess:
-      return {...state, isLoading:false, isError: false, data:action.payload}
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload,
+      };
     case storiesFetchFailure:
-      return{...state, isLoading:false, isError:true}
+      return { ...state, isLoading: false, isError: true };
     case removeStory:
       return state.filter(
         (story) => action.payload.objectID !== story.objectID
@@ -40,30 +49,10 @@ const storiesReducer = (state, action) => {
   }
 };
 
+const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
+
 const App = () => {
   console.log("app renders");
-  const initialStories = [
-    {
-      title: "React",
-      url: "https://reactjs.org/",
-      author: "Jordan Walke",
-      num_comments: 3,
-      points: 4,
-      objectID: 0,
-    },
-    {
-      title: "Redux",
-      url: "https://redux.js.org/",
-      author: "Dan Abramov, Andrew Clark",
-      num_comments: 2,
-      points: 5,
-      objectID: 1,
-    },
-  ];
-
-  const getAsyncStories = () =>
-    new Promise((resolve, reject) => setTimeout(reject, 2000));
-
   const [searchTerm, setSearchTerm] = useSemiPersistantState("search", "React");
 
   const [stories, dispatchStories] = useReducer(storiesReducer, {
@@ -73,12 +62,14 @@ const App = () => {
   });
 
   useEffect(() => {
-    dispatchStories({type: storiesFetchInit})
-    getAsyncStories()
+    dispatchStories({ type: storiesFetchInit });
+
+    fetch(`${API_ENDPOINT}react`)
+      .then((response) => response.json())
       .then((result) => {
-        dispatchStories({ type: storiesFetchSuccess, payload: result.data.stories });
+        dispatchStories({ type: storiesFetchSuccess, payload: result.hits });
       })
-      .catch(() => dispatchStories({type: storiesFetchFailure}));
+      .catch(() => dispatchStories({ type: storiesFetchFailure }));
   }, []);
 
   const handleRemoveStory = (item) => {
