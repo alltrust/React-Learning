@@ -63,14 +63,14 @@ const App = () => {
     isError: false,
   });
 
-  const handleFetchStories = React.useCallback(() => {
+  const handleFetchStories = React.useCallback(async () => {
     dispatchStories({ type: storiesFetchInit });
-    axios
-      .get(url)
-      .then((result) => {
-        dispatchStories({ type: storiesFetchSuccess, payload: result.data.hits });
-      })
-      .catch(() => dispatchStories({ type: storiesFetchFailure }));
+    try {
+      const result = await axios.get(url);
+      dispatchStories({ type: storiesFetchSuccess, payload: result.data.hits });
+    } catch {
+      dispatchStories({ type: storiesFetchFailure });
+    }
   }, [url]);
 
   useEffect(() => {
@@ -85,8 +85,9 @@ const App = () => {
   const handleSearchInput = (event) => {
     setSearchTerm(event.target.value);
   };
-  const handleSearchSubmit = () => {
+  const handleSearchSubmit = (event) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
+    event.preventDefault();
   };
   // const searchedStories = stories.data.filter((story) => {
   //   return story.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -98,20 +99,12 @@ const App = () => {
         {welcome.greeting}
         {welcome.title}
       </h1>
-      {/* <Slider /> */}
-
-      <InputWithLabel
-        id="search"
-        label="search"
-        value={searchTerm}
-        onInputChange={handleSearchInput}
-        isFocused
-      >
-        Search:
-      </InputWithLabel>
-      <button type="button" disabled={!searchTerm} onClick={handleSearchSubmit}>
-        Submit
-      </button>
+      <SearchForm
+        onSearchSubmit={handleSearchSubmit}
+        searchTerm={searchTerm}
+        onSearchInput={handleSearchInput}
+      />
+      <PracticeClassComponent />
       <hr />
       {stories.isError && <p>...something went wrong</p>}
       {stories.isLoading ? (
@@ -120,6 +113,53 @@ const App = () => {
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
     </>
+  );
+};
+
+class PracticeClassComponent extends React.Component {
+  constructor() {
+    super();
+
+    this.state = {
+      value: "",
+    };
+    this.onChange = this.onChange.bind(this);
+  }
+  onChange(event) {
+    this.setState({ value: event.target.value });
+  }
+
+  render() {
+    return (
+      <div>
+        <h3>class component</h3>
+        <input
+          type="text"
+          value={this.state.value}
+          onChange={this.onChange}
+        ></input>
+        <h2>{this.state.value}</h2>
+      </div>
+    );
+  }
+}
+
+const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
+  return (
+    <form onSubmit={onSearchSubmit}>
+      <InputWithLabel
+        id="search"
+        label="search"
+        value={searchTerm}
+        onInputChange={onSearchInput}
+        isFocused
+      >
+        Search:
+      </InputWithLabel>
+      <button type="submit" disabled={!searchTerm}>
+        Submit
+      </button>
+    </form>
   );
 };
 
