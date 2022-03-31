@@ -62,15 +62,16 @@ const App = () => {
   });
 
   useEffect(() => {
-    dispatchStories({ type: storiesFetchInit });
-
-    fetch(`${API_ENDPOINT}react`)
+    if (!searchTerm)return;
+    dispatchStories({type: storiesFetchInit})
+    
+    fetch(`${API_ENDPOINT}${searchTerm}`)
       .then((response) => response.json())
       .then((result) => {
         dispatchStories({ type: storiesFetchSuccess, payload: result.hits });
       })
       .catch(() => dispatchStories({ type: storiesFetchFailure }));
-  }, []);
+  }, [searchTerm]);
 
   const handleRemoveStory = (item) => {
     dispatchStories({ type: removeStory, payload: item });
@@ -106,7 +107,7 @@ const App = () => {
       {stories.isLoading ? (
         <p>...Loading </p>
       ) : (
-        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+        <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
     </>
   );
