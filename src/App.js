@@ -10,9 +10,15 @@ const welcome = {
 };
 
 const useSemiPersistantState = (key, initialValue) => {
+  const isMounted = useRef(false);
   const [value, setValue] = useState(localStorage.getItem(key) || initialValue);
   useEffect(() => {
-    localStorage.setItem(key, value);
+    if (!isMounted.current) {
+      isMounted.current = true;
+    } else {
+      console.log("A");
+      localStorage.setItem(key, value);
+    }
   }, [value, key]);
   return [value, setValue];
 };
@@ -205,7 +211,7 @@ const Item = ({ item, onRemoveItem }) => {
           type="button"
           onClick={() => onRemoveItem(item)}
         >
-          <Check height="18px" width="18px"/>
+          <Check height="18px" width="18px" />
         </button>
       </span>
       <br />
