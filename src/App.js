@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef, useReducer } from "react";
 import axios from "axios";
 
+import styles from "./App.module.css";
+import { ReactComponent as Check } from "./check.svg";
+
 const welcome = {
   greeting: "Hey ",
   title: "React",
@@ -41,9 +44,12 @@ const storiesReducer = (state, action) => {
     case storiesFetchFailure:
       return { ...state, isLoading: false, isError: true };
     case removeStory:
-      return state.filter(
-        (story) => action.payload.objectID !== story.objectID
-      );
+      return {
+        ...state,
+        data: state.data.filter(
+          (story) => action.payload.objectID !== story.objectID
+        ),
+      };
     default:
       throw new Error("error");
   }
@@ -94,8 +100,8 @@ const App = () => {
   // });
 
   return (
-    <>
-      <h1>
+    <div className={styles.container}>
+      <h1 className={styles.headlinePrimary}>
         {welcome.greeting}
         {welcome.title}
       </h1>
@@ -112,7 +118,7 @@ const App = () => {
       ) : (
         <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
-    </>
+    </div>
   );
 };
 
@@ -146,7 +152,7 @@ class PracticeClassComponent extends React.Component {
 
 const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
   return (
-    <form onSubmit={onSearchSubmit}>
+    <form className={styles.search} onSubmit={onSearchSubmit}>
       <InputWithLabel
         id="search"
         label="search"
@@ -156,7 +162,11 @@ const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
       >
         Search:
       </InputWithLabel>
-      <button type="submit" disabled={!searchTerm}>
+      <button
+        className={`${styles.button} ${styles.buttonLarge}`}
+        type="submit"
+        disabled={!searchTerm}
+      >
         Submit
       </button>
     </form>
@@ -182,18 +192,24 @@ const Item = ({ item, onRemoveItem }) => {
   // }
   console.log("item renders");
   return (
-    <>
-      <a href={item.url}>{item.title}</a>
-      <span> {item.author}</span>
-      <span> {item.num_comments}</span>
-      <span> {item.points}</span>
-      <span>
-        <button type="button" onClick={() => onRemoveItem(item)}>
-          Dismiss
+    <li className={styles.item}>
+      <span style={{ width: "40%" }}>
+        <a href={item.url}>{item.title}</a>
+      </span>
+      <span style={{ width: "30%" }}> {item.author}</span>
+      <span style={{ width: "10%" }}> {item.num_comments}</span>
+      <span style={{ width: "10%" }}> {item.points}</span>
+      <span style={{ width: "10%" }}>
+        <button
+          className={`${styles.button} ${styles.buttonSmall}`}
+          type="button"
+          onClick={() => onRemoveItem(item)}
+        >
+          <Check height="18px" width="18px"/>
         </button>
       </span>
       <br />
-    </>
+    </li>
   );
 };
 
@@ -217,7 +233,9 @@ const InputWithLabel = ({
   // const {search, onSearch} = props
   return (
     <div>
-      <label htmlFor={id}>{children}</label>
+      <label className={styles.label} htmlFor={id}>
+        {children}
+      </label>
       &nbsp;
       <input
         id={id}
@@ -225,6 +243,7 @@ const InputWithLabel = ({
         onChange={onInputChange}
         value={value}
         ref={inputRef}
+        className={styles.input}
       />
     </div>
   );
